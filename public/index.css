@@ -1,42 +1,51 @@
 /* ============================================================
-   GAMES PAGE — FORCE CLEAN 8x GRID + SMALL SQUARE ICONS
+   FIXED GAMES PAGE — CLEAN 8 PER ROW, NORMAL SIZED ICONS
    ============================================================ */
 
-.game-grid {
+/* force games grid to behave */
+body.games-page .game-grid {
   display: grid !important;
   grid-template-columns: repeat(8, 1fr) !important;
-  gap: 10px !important;
-  justify-items: center !important;
-  align-items: start !important;
+  gap: 14px !important;
+  padding-top: 10px !important;
 }
 
-/* every game card becomes a small tile */
-.game-card {
+/* card size normalized */
+body.games-page .game-card {
   width: 100% !important;
-  max-width: 95px !important;   /* tile size */
-  padding: 4px !important;
-  border-width: 2px !important;
+  max-width: 110px !important;
+  padding: 6px !important;
+  border: 2px solid #262626 !important;
+  background: #080808 !important;
+}
+
+/* perfect square thumbnails */
+body.games-page .game-thumb {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
   overflow: hidden !important;
 }
 
-/* square thumbnails only for games */
-.game-thumb {
-  width: 100% !important;
-  height: 95px !important;      /* perfect square */
-  aspect-ratio: auto !important;
-  border-width: 1px !important;
-  overflow: hidden !important;
-}
-
-.game-thumb img {
+body.games-page .game-thumb img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   image-rendering: pixelated !important;
 }
 
-/* overlay stays normal but scaled to smaller size */
-.game-overlay {
+/* overlay stays small */
+body.games-page .game-overlay {
   font-size: 8px !important;
-  padding: 4px !important;
+}
+
+/* ensure header goes back to normal */
+body.games-page .site-header {
+  position: sticky !important;
+  display: flex !important;
+}
+
+/* remove ALL old media queries that were messing it up */
+body.games-page * {
+  max-width: none !important;
 }
