@@ -11,13 +11,8 @@
     <link rel="shortcut icon" content="favicon.ico" />
     <link rel="stylesheet" href="index.css" />
 
-    <!-- Scramjet stack -->
-    <script src="/scram/scramjet.all.js"></script>
-    <script src="baremux/index.js" defer></script>
-    <script src="epoxy/index.js" defer></script>
+    <!-- Only need SW + global stuff here -->
     <script src="register-sw.js" defer></script>
-
-    <!-- global settings / tab cloak -->
     <script src="global-hub.js" defer></script>
   </head>
 
@@ -58,7 +53,7 @@
       </div>
 
       <div class="player-frame-wrap" id="frame-wrap">
-        <!-- Scramjet will inject its iframe here -->
+        <!-- iframe gets injected here -->
       </div>
 
       <div class="no-src" id="no-src" style="display:none;">
@@ -72,8 +67,8 @@
         return params.get(name);
       }
 
-      async function setupScramjetAndPlay() {
-        let src = getParam("src");
+      async function bootPlayer() {
+        const rawSrc = getParam("src");
         const title = getParam("title") || "Media";
 
         const titleEl = document.getElementById("player-title");
@@ -84,7 +79,7 @@
 
         if (titleEl) titleEl.textContent = title;
 
-        if (!src) {
+        if (!rawSrc) {
           if (wrap) wrap.style.display = "none";
           if (noSrc) noSrc.style.display = "flex";
           if (openDirect) openDirect.style.display = "none";
@@ -92,21 +87,17 @@
           return;
         }
 
-        // decode query param
-        src = decodeURIComponent(src).trim();
+        let src = decodeURIComponent(rawSrc).trim();
 
-        // If src is already a Scramjet path like "/scramjet/https://..."
-        // or "/scram/https://...", strip that prefix so Scramjet sees
-        // the actual URL, not the proxied path.
-        if (src.startsWith("/scramjet/")) {
-          src = src.slice("/scramjet/".length);
-        } else if (src.startsWith("/scram/")) {
-          src = src.slice("/scram/".length);
-        }
-
-        // now src should be like "https://cinemaos.live/..." etc.
-        if (!/^https?:\/\//i.test(src)) {
-          console.error("mediaplayer: src is not a valid http/https URL:", src);
+        // src is allowed to be:
+        //   - /scramjet/https://...
+        //   - /scram/https://...
+        //   - https://...
+        // We DO NOT touch it for the iframe – we just feed it straight in.
+        if (!src.startsWith("/scramjet/") &&
+            !src.startsWith("/scram/") &&
+            !/^https?:\/\//i.test(src)) {
+          console.error("mediaplayer: invalid src", src);
           if (wrap) wrap.style.display = "none";
           if (noSrc) {
             noSrc.style.display = "flex";
@@ -117,90 +108,61 @@
           return;
         }
 
-        if (openDirect) {
-          openDirect.href = src;
-          openDirect.style.display = "inline-flex";
-        }
-        if (reloadBtn) {
-          reloadBtn.style.display = "inline-flex";
+        // Try to extract a raw URL for the "open raw" button if we can
+        let rawUrl = null;
+        if (src.startsWith("/scramjet/")) {
+          rawUrl = src.slice("/scramjet/".length);
+        } else if (src.startsWith("/scram/")) {
+          rawUrl = src.slice("/scram/".length);
+        } else if (/^https?:\/\//i.test(src)) {
+          rawUrl = src;
         }
 
-        // --- register service worker ---
+        if (rawUrl && /^https?:\/\//i.test(rawUrl)) {
+          openDirect.href = rawUrl;
+          openDirect.style.display = "inline-flex";
+        } else {
+          openDirect.style.display = "none";
+        }
+
+        if (reloadBtn) reloadBtn.style.display = "inline-flex";
+
+        // Make sure SW is registered before the iframe hits /scramjet/...
         try {
           if (typeof registerSW === "function") {
             await registerSW();
           }
         } catch (err) {
-          console.error("SW registration failed in mediaplayer:", err);
-        }
-
-        // --- Scramjet controller ---
-        if (typeof $scramjetLoadController !== "function") {
-          console.error("scramjet.all.js not loaded / $scramjetLoadController missing");
-          return;
-        }
-
-        const { ScramjetController } = $scramjetLoadController();
-
-        const scramjet = new ScramjetController({
-          files: {
-            wasm: "/scram/scramjet.wasm.wasm",
-            all: "/scram/scramjet.all.js",
-            sync: "/scram/scramjet.sync.js",
-          },
-        });
-
-        await scramjet.init();
-
-        // --- BareMux transport (Epoxy) ---
-        if (typeof BareMux === "undefined") {
-          console.warn("BareMux is not available in mediaplayer");
-        } else {
-          const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-          const wispUrl =
-            (location.protocol === "https:" ? "wss" : "ws") +
-            "://" +
-            location.host +
-            "/wisp/";
-
-          try {
-            const current = await connection.getTransport();
-            if (current !== "/epoxy/index.mjs") {
-              await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
-            }
-          } catch (err) {
-            console.error("Failed to set BareMux transport in mediaplayer:", err);
-          }
+          console.warn("SW registration failed in mediaplayer:", err);
+          // still try to load iframe anyway
         }
 
         if (!wrap) {
-          console.error("No frame wrapper found");
+          console.error("no frame wrapper");
           return;
         }
 
-        // clear any previous frame
+        // clear any old frame
         wrap.innerHTML = "";
 
-        const frameObj = scramjet.createFrame();
-        frameObj.frame.id = "media-frame";
-        frameObj.frame.style.width = "100%";
-        frameObj.frame.style.height = "100%";
-        frameObj.frame.style.border = "none";
+        const iframe = document.createElement("iframe");
+        iframe.id = "media-frame";
+        iframe.src = src;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
 
-        wrap.appendChild(frameObj.frame);
-
-        // Give Scramjet the REAL URL, not a /scram/ path
-        frameObj.go(src);
+        wrap.appendChild(iframe);
 
         if (reloadBtn) {
-          reloadBtn.addEventListener("click", () => {
-            frameObj.go(src);
-          });
+          reloadBtn.onclick = () => {
+            iframe.src = src;
+          };
         }
       }
 
       window.addEventListener("DOMContentLoaded", () => {
-        setupScramjetAndPlay().catch((err) =>
+        bootPlayer().catch((err) =>
           console.error("mediaplayer boot error:", err)
         );
       });
