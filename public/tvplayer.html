@@ -34,8 +34,8 @@
         padding: 12px 10px 18px;
         display: grid;
         grid-template-columns: minmax(0, 3.5fr) minmax(260px, 1.4fr);
-        gap: 40px; /* more separation like your sketch */
-        align-items: flex-start;
+        gap: 40px; /* separation like your sketch */
+        align-items: stretch; /* make both columns same height */
       }
 
       .tv-left {
@@ -54,6 +54,7 @@
         flex-direction: column;
         gap: 8px;
         min-height: 0;
+        height: 100%; /* match grid row height */
       }
 
       .tv-sidebar-title {
@@ -99,13 +100,13 @@
       }
 
       .tv-episodes {
-        flex: 1;
+        flex: 1;              /* fill sidebar height */
         border: 1px solid #202020;
         background: #020202;
         padding: 4px;
         overflow-y: auto;
         font-size: 8px;
-        min-height: 200px;
+        min-height: 0;
       }
 
       .tv-episode-btn {
@@ -248,13 +249,11 @@
         box-shadow: 0 0 14px rgba(0, 255, 127, 0.5);
       }
 
-      @media (max-width: 900px) {
+      /* keep side-by-side even on smaller screens */
+      @media (max-width: 700px) {
         .tv-main-layout {
-          grid-template-columns: minmax(0, 1fr);
-          gap: 20px;
-        }
-        .tv-right {
-          order: -1; /* sidebar on top on small screens */
+          max-width: 100%;
+          padding: 8px 6px 14px;
         }
       }
     </style>
@@ -289,6 +288,8 @@
           <div class="player-frame-wrap">
             <div id="player-loading" class="player-loading">
               CONNECTING TO PROXY…
+              <span id="player-loading-sub">
+                First load can be slow while the proxy boots and the host responds.
               </span>
             </div>
 
@@ -314,6 +315,8 @@
         <!-- RIGHT: season + episodes panel -->
         <aside class="tv-right">
           <div class="tv-sidebar-title">Seasons & Episodes</div>
+          <div class="tv-sidebar-sub">
+            Auto-loaded from TMDB. Click any episode to jump.
           </div>
 
           <div class="tv-season-row">
