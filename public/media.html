@@ -2,10 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>S0LACE • Media</title>
 
     <link rel="shortcut icon" content="favicon.ico" />
@@ -15,9 +12,7 @@
 
   <body>
     <header class="site-header">
-      <div class="site-title">
-        S0LACE
-      </div>
+      <div class="site-title">S0LACE</div>
       <nav class="site-nav">
         <a href="index.html">Home</a>
         <a href="games.html">Games</a>
@@ -36,62 +31,41 @@
         </div>
       </div>
 
-      <!-- FILTER BAR (local filter for all cards) -->
+      <!-- FILTER BAR -->
       <div class="games-search-wrap">
         <span class="search-label">FILTER &gt;</span>
-        <input
-          id="media-search"
-          type="text"
-          placeholder="filter movies & shows..."
-          autocomplete="off"
-        />
+        <input id="media-search" type="text" placeholder="filter movies & shows..." autocomplete="off" />
       </div>
 
-      <!-- TMDB STATUS (debug/errors/info) -->
       <div id="tmdb-status" style="font-size: 9px; color: #7f7f7f; margin: 4px 0 10px;">
         Loading popular titles from TMDB…
       </div>
 
       <div class="media-grid" id="media-grid">
-        <!-- STATIC EXAMPLE CARD (Interstellar via TMDB ID) -->
-        <!-- You can duplicate this pattern and set data-tmdb-id OR data-src -->
-        <a
-          class="media-card"
-          href="#"
-          data-title="Interstellar"
-          data-tmdb-id="157336"
-        >
+
+        <!-- STATIC EXAMPLE -->
+        <a class="media-card" href="#" data-title="Interstellar" data-tmdb-id="157336">
           <div class="poster-thumb">
             <img src="thumbs/interstellar-poster.jpg" alt="Interstellar" />
             <div class="media-overlay">Interstellar</div>
           </div>
         </a>
 
-        <!-- ANOTHER STATIC EXAMPLE USING DIRECT SRC -->
-        <a
-          class="media-card"
-          href="#"
-          data-title="Custom Stream"
-          data-src="/scramjet/https://example.com/my-custom-player"
-        >
+        <a class="media-card" href="#" data-title="Custom Stream" data-src="/scramjet/https://example.com/my-custom-player">
           <div class="poster-thumb">
             <img src="thumbs/custom-example.jpg" alt="Custom Stream" />
             <div class="media-overlay">Custom Stream</div>
           </div>
         </a>
 
-        <!-- TMDB TRENDING CARDS WILL BE INSERTED ABOVE THESE VIA JS -->
       </div>
 
       <div id="media-empty">No media matches that search.</div>
     </main>
 
     <script>
-      // ====== CONFIG ======
-      // IMPORTANT:
-      // Use the "API Key (v3 auth)" from TMDB -> Settings -> API
-      // It does NOT start with "eyJ..." – that's the v4 token and will NOT work here.
-      const TMDB_KEY = "2d1351cf74f73892042699d0431b799a"; // <-- PUT REAL v3 KEY HERE
+      // ===== CONFIG =====
+      const TMDB_KEY = "2d1351cf74f73892042699d0431b799a"; // <--- YOUR REAL WORKING KEY
       const TMDB_IMG_BASE = "https://image.tmdb.org/t/p/w342";
 
       const mediaSearch = document.getElementById("media-search");
@@ -99,10 +73,9 @@
       const mediaEmpty = document.getElementById("media-empty");
       const tmdbStatus = document.getElementById("tmdb-status");
 
-      // We'll maintain an array of all cards (static + TMDB) for filtering
       let mediaCards = [];
 
-      // ====== CREATE CARD DOM FROM TMDB MOVIE ======
+      // ===== CREATE CARD FROM TMDB =====
       function createCardFromTMDB(movie) {
         const id = movie.id;
         const title = movie.title || movie.name || "Untitled";
@@ -118,12 +91,7 @@
         thumb.className = "poster-thumb";
 
         const img = document.createElement("img");
-        if (posterPath) {
-          img.src = TMDB_IMG_BASE + posterPath;
-        } else {
-          // fallback if no poster
-          img.src = "thumbs/placeholder-poster.png";
-        }
+        img.src = posterPath ? TMDB_IMG_BASE + posterPath : "thumbs/placeholder-poster.png";
         img.alt = title;
 
         const overlay = document.createElement("div");
@@ -134,7 +102,6 @@
         thumb.appendChild(overlay);
         a.appendChild(thumb);
 
-        // Click: go to cinemaos player through Scramjet
         a.addEventListener("click", (e) => {
           e.preventDefault();
           goToPlayer(title, "/scramjet/https://cinemaos.live/player/" + id);
@@ -143,7 +110,7 @@
         return a;
       }
 
-      // ====== NAVIGATE TO MEDIAPLAYER ======
+      // ===== PLAYER NAV =====
       function goToPlayer(title, src) {
         if (!src) return;
 
@@ -156,13 +123,14 @@
         window.location.href = url;
       }
 
-      // Attach click handlers for static cards already in HTML
+      // ===== STATIC CARD HANDLERS =====
       function wireStaticCards() {
         mediaCards = Array.from(document.querySelectorAll(".media-card"));
 
         mediaCards.forEach((card) => {
           card.addEventListener("click", (e) => {
             e.preventDefault();
+
             const title =
               card.dataset.title ||
               card.querySelector(".media-overlay")?.textContent.trim() ||
@@ -176,12 +144,13 @@
             }
 
             if (!src) return;
+
             goToPlayer(title, src);
           });
         });
       }
 
-      // ====== FILTER FUNCTION ======
+      // ===== FILTER =====
       function filterMedia() {
         const q = (mediaSearch.value || "").trim().toLowerCase();
         let visibleCount = 0;
@@ -193,23 +162,18 @@
           if (match) visibleCount++;
         });
 
-        if (mediaEmpty) {
-          mediaEmpty.style.display = q && visibleCount === 0 ? "block" : "none";
-        }
+        mediaEmpty.style.display = q && visibleCount === 0 ? "block" : "none";
       }
 
-      // ====== LOAD TRENDING FROM TMDB ======
+      // ===== TMDB LOAD TRENDING =====
       async function loadTrending() {
-        if (!TMDB_KEY || TMDB_KEY === "2d1351cf74f73892042699d0431b799a") {
-          if (tmdbStatus) {
-            tmdbStatus.textContent =
-              "TMDB not configured. Edit TMDB_KEY in media.html and use the v3 API key.";
-          }
+        if (!TMDB_KEY) {
+          tmdbStatus.textContent = "TMDB KEY missing.";
           return;
         }
 
         try {
-          if (tmdbStatus) tmdbStatus.textContent = "Loading trending titles…";
+          tmdbStatus.textContent = "Loading trending titles…";
 
           const url =
             "https://api.themoviedb.org/3/trending/movie/day?api_key=" +
@@ -217,61 +181,39 @@
             "&language=en-US";
 
           const res = await fetch(url);
-          if (!res.ok) {
-            throw new Error("TMDB HTTP " + res.status);
-          }
+          if (!res.ok) throw new Error("TMDB HTTP " + res.status);
 
           const data = await res.json();
           const results = data.results || [];
 
           if (!results.length) {
-            if (tmdbStatus) tmdbStatus.textContent = "No trending titles found.";
+            tmdbStatus.textContent = "No trending movies found.";
             return;
           }
 
-          // Insert TMDB cards at the top of the grid (before static ones)
           const fragment = document.createDocumentFragment();
           results.slice(0, 24).forEach((movie) => {
-            const card = createCardFromTMDB(movie);
-            fragment.appendChild(card);
+            fragment.appendChild(createCardFromTMDB(movie));
           });
 
-          // Prepend to grid
-          if (mediaGrid.firstChild) {
-            mediaGrid.insertBefore(fragment, mediaGrid.firstChild);
-          } else {
-            mediaGrid.appendChild(fragment);
-          }
+          mediaGrid.insertBefore(fragment, mediaGrid.firstChild);
 
-          // Rebuild card list (now includes TMDB cards)
           mediaCards = Array.from(document.querySelectorAll(".media-card"));
-
-          if (tmdbStatus) {
-            tmdbStatus.textContent = "Showing popular movies from TMDB.";
-          }
+          tmdbStatus.textContent = "Showing popular movies from TMDB.";
         } catch (err) {
           console.error(err);
-          if (tmdbStatus) {
-            tmdbStatus.textContent =
-              "TMDB error: " +
-              err.message +
-              " (check that you're using the v3 API key, not the v4 token)";
-          }
+          tmdbStatus.textContent = "TMDB error: " + err.message;
         }
       }
 
-      // ====== INIT ======
+      // ===== INIT =====
       document.addEventListener("DOMContentLoaded", () => {
         wireStaticCards();
         loadTrending().then(() => {
-          // after TMDB cards are added, refresh our mediaCards reference
           mediaCards = Array.from(document.querySelectorAll(".media-card"));
         });
 
-        if (mediaSearch) {
-          mediaSearch.addEventListener("input", filterMedia);
-        }
-
+        mediaSearch.addEventListener("input", filterMedia);
         filterMedia();
       });
     </script>
