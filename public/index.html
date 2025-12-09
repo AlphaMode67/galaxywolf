@@ -2,16 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>S0LACE</title>
 
     <link rel="shortcut icon" content="favicon.ico" />
     <link rel="stylesheet" href="index.css" />
 
-    <!-- Scramjet stack – keep these paths matching whatever works in your repo -->
+    <!-- Scramjet stack -->
     <script src="/scram/scramjet.all.js"></script>
     <script src="baremux/index.js" defer></script>
     <script src="epoxy/index.js" defer></script>
@@ -19,12 +16,11 @@
     <script src="search.js" defer></script>
     <script src="index.js" defer></script>
 
-    <!-- global settings / tab cloak -->
+    <!-- global theme / settings -->
     <script src="global-hub.js" defer></script>
 
-
     <style>
-      /* === added: clean subheader styling === */
+      /* subheader style fix */
       .sub {
         text-align: center;
         font-size: 12px;
@@ -32,13 +28,11 @@
         color: var(--fg-dim);
         font-family: Spectral, serif;
         opacity: 0.8;
-        pointer-events: none;
       }
     </style>
   </head>
 
   <body>
-
     <header class="site-header">
       <div class="site-title">S0LACE</div>
       <nav class="site-nav">
@@ -50,11 +44,12 @@
     </header>
 
     <main class="home-main">
-      <!-- CENTER: BIG LOGO + PROXY -->
+
+      <!-- ========= CENTER TITLE + PROXY ========= -->
       <section class="home-center">
         <div class="home-logo-title">
           <div class="home-logo-mark">S0LACE</div>
-
+        </div>
 
         <section class="home-panel home-proxy-panel">
           <div id="motd">loading</div>
@@ -62,16 +57,8 @@
           <div style="margin-top: 14px;">
             <div class="proxy-label">PR0XY &gt;</div>
             <form id="sj-form">
-              <input
-                id="sj-search-engine"
-                value="https://www.google.com/search?q=%s"
-                type="hidden"
-              />
-              <input
-                id="sj-address"
-                type="text"
-                placeholder="type a url or search..."
-              />
+              <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+              <input id="sj-address" type="text" placeholder="type a url or search..." />
               <button class="proxy-btn" type="submit">GO</button>
             </form>
             <div id="sj-error"></div>
@@ -80,157 +67,86 @@
         </section>
       </section>
 
-      <!-- POPULAR GAMES STRIP -->
+      <!-- ========= POPULAR GAMES (PIZZA STYLE, SCROLLING) ========= -->
       <section class="home-panel home-popular-panel">
         <div class="motd-label">POPULAR GAMES</div>
 
         <div class="popular-wrap">
           <div class="popular-track">
-            <!-- (unchanged list of games…) -->
-            <!-- first loop -->
-            <a
-              class="popular-pill"
-              href="player.html?game=games/retrobowl/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/retrobowl.png');"
-              ></span>
-              <span class="pill-name">Retro&nbsp;Bowl</span>
+
+            <!-- LOOP 1 -->
+            <a class="popular-pill" href="player.html?game=games/retrobowl/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/retrobowl.png')"></span>
+              <span class="pill-name">Retro Bowl</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/balatro/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/balatro.jpeg');"
-              ></span>
+            <a class="popular-pill" href="player.html?game=games/balatro/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/balatro.jpeg')"></span>
               <span class="pill-name">Balatro</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/geometrydash/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/geometrydash.png');"
-              ></span>
-              <span class="pill-name">Geometry&nbsp;Dash</span>
+            <a class="popular-pill" href="player.html?game=games/geometrydash/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/geometrydash.png')"></span>
+              <span class="pill-name">Geometry Dash</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/monkey-mart/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/monkey-mart.jpeg');"
-              ></span>
-              <span class="pill-name">Monkey&nbsp;Mart</span>
+            <a class="popular-pill" href="player.html?game=games/monkey-mart/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/monkey-mart.jpeg')"></span>
+              <span class="pill-name">Monkey Mart</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/level-devil/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/leveldevil.jpeg');"
-              ></span>
-              <span class="pill-name">Level&nbsp;Devil</span>
+            <a class="popular-pill" href="player.html?game=games/level-devil/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/leveldevil.jpeg')"></span>
+              <span class="pill-name">Level Devil</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/snow-rider/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/snow-rider.jpeg');"
-              ></span>
-              <span class="pill-name">Snow&nbsp;Rider&nbsp;3D</span>
+            <a class="popular-pill" href="player.html?game=games/snow-rider/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/snow-rider.jpeg')"></span>
+              <span class="pill-name">Snow Rider 3D</span>
             </a>
 
-            <!-- duplicate loop so scroll looks infinite -->
-            <a
-              class="popular-pill"
-              href="player.html?game=games/retrobowl/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/retrobowl.png');"
-              ></span>
-              <span class="pill-name">Retro&nbsp;Bowl</span>
+            <!-- LOOP 2 (duplicate for infinite scroll) -->
+            <a class="popular-pill" href="player.html?game=games/retrobowl/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/retrobowl.png')"></span>
+              <span class="pill-name">Retro Bowl</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/harvestsimulator/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/harvestsimulator.png');"
-              ></span>
-              <span class="pill-name">Harvest&nbsp;Simulator</span>
+            <a class="popular-pill" href="player.html?game=games/harvestsimulator/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/harvestsimulator.png')"></span>
+              <span class="pill-name">Harvest Simulator</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/gun-spin/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/gun-spin.jpeg');"
-              ></span>
-              <span class="pill-name">Gun&nbsp;Spin</span>
+            <a class="popular-pill" href="player.html?game=games/gun-spin/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/gun-spin.jpeg')"></span>
+              <span class="pill-name">Gun Spin</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/monkey-mart/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/monkey-mart.jpeg');"
-              ></span>
-              <span class="pill-name">Monkey&nbsp;Mart</span>
+            <a class="popular-pill" href="player.html?game=games/monkey-mart/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/monkey-mart.jpeg')"></span>
+              <span class="pill-name">Monkey Mart</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/level-devil/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/leveldevil.jpeg');"
-              ></span>
-              <span class="pill-name">Level&nbsp;Devil</span>
+            <a class="popular-pill" href="player.html?game=games/level-devil/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/leveldevil.jpeg')"></span>
+              <span class="pill-name">Level Devil</span>
             </a>
 
-            <a
-              class="popular-pill"
-              href="player.html?game=games/drift-boss/index.html"
-            >
-              <span
-                class="pill-thumb"
-                style="background-image: url('thumbs/drift-boss.jpeg');"
-              ></span>
-              <span class="pill-name">Drift&nbsp;Boss</span>
+            <a class="popular-pill" href="player.html?game=games/drift-boss/index.html">
+              <span class="pill-thumb" style="background-image:url('thumbs/drift-boss.jpeg')"></span>
+              <span class="pill-name">Drift Boss</span>
             </a>
+
           </div>
         </div>
       </section>
     </main>
 
+    <!-- MOTD Script -->
     <script>
-      // random message system
       const motdEl = document.getElementById("motd");
       const lines = [
         "do you like the new theme",
-        "media workks now",
+        "media works now",
         "made in school",
         "i hate adding games",
         "rip trinity",
@@ -238,17 +154,17 @@
         "jollybaby stickers on top",
         "go check out aurababy",
         "i wanna go homeeee",
-        "make me less ncihe"
+        "make me less niche"
       ];
 
       function setRandomMotd() {
-        if (!motdEl) return;
         const i = Math.floor(Math.random() * lines.length);
         motdEl.textContent = lines[i];
       }
 
-      motdEl?.addEventListener("click", setRandomMotd);
+      motdEl.addEventListener("click", setRandomMotd);
       setRandomMotd();
     </script>
+
   </body>
 </html>
