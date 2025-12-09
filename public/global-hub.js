@@ -15,7 +15,7 @@
   const ANTICLOSE_KEY = "s0laceAntiClose";
   const PANIC_KEY = "s0lacePanicConfig";
 
-  const STAR_GIF = "https://i.ibb.co/3mJFWyY/starfield-loop.gif";
+  const STAR_GIF = "background.gif";
 
   const ACCENTS = {
     green: { accent: "#00ff7f", soft: "rgba(0,255,127,0.12)" },
