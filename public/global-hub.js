@@ -142,4 +142,90 @@
     applyTheme,
     applyBackground
   };
+
+    /* ===========================================================
+      ABOUT:BLANK STARTUP + ANTI-CLOSE PROTECTION
+     =========================================================== */
+
+  const STARTUP_KEY = "s0laceStartupBlank";
+  const ANTI_CLOSE_KEY = "s0laceAntiClose";
+
+  // ---------- Anti-Close Protection ----------
+  function preventClose(e) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+
+  function enableAntiClose() {
+    window.addEventListener("beforeunload", preventClose);
+  }
+
+  function disableAntiClose() {
+    window.removeEventListener("beforeunload", preventClose);
+  }
+
+  function loadAntiClose() {
+    const enabled = localStorage.getItem(ANTI_CLOSE_KEY) === "1";
+    if (enabled) enableAntiClose();
+    return enabled;
+  }
+
+  // Make internal links not trigger warning
+  function patchInternalNavigation() {
+    document.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", () => {
+        disableAntiClose();  
+        setTimeout(() => {
+          if (localStorage.getItem(ANTI_CLOSE_KEY) === "1") {
+            enableAntiClose();
+          }
+        }, 400);
+      });
+    });
+  }
+
+  // ---------- About:Blank Startup ----------
+  function launchIntoBlank() {
+    if (localStorage.getItem(STARTUP_KEY) !== "1") return;
+
+    // Only auto-launch FROM settings, not every page.
+    if (!location.pathname.endsWith("settings.html")) return;
+
+    const win = window.open("about:blank", "_blank");
+    if (!win) return alert("Popup blocked — allow popups to use about:blank mode.");
+
+    win.document.write(`
+      <style>
+        body { margin:0; background:black; display:flex; align-items:center; justify-content:center; }
+        iframe { border:none; width:100vw; height:100vh; }
+      </style>
+      <iframe src="${location.origin}/index.html"></iframe>
+    `);
+  }
+
+  // ---------- INIT ----------
+  document.addEventListener("DOMContentLoaded", () => {
+    loadAntiClose();
+    patchInternalNavigation();
+    launchIntoBlank();
+  });
+
+  // Expose for settings
+  window.S0LACE.enableAntiClose = () => {
+    localStorage.setItem(ANTI_CLOSE_KEY, "1");
+    enableAntiClose();
+  };
+
+  window.S0LACE.disableAntiClose = () => {
+    localStorage.removeItem(ANTI_CLOSE_KEY);
+    disableAntiClose();
+  };
+
+  window.S0LACE.enableBlankStartup = () => {
+    localStorage.setItem(STARTUP_KEY, "1");
+  };
+
+  window.S0LACE.disableBlankStartup = () => {
+    localStorage.removeItem(STARTUP_KEY);
+  };
 })();
