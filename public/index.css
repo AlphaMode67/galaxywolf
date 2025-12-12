@@ -769,13 +769,81 @@ h1::after {
   font-family: "Press Start 2P";
 }
 
-.game-grid,
-.app-grid,
-.media-grid {
+/* ============ NEW FULL-WIDTH 8 COLUMN GRID ============ */
+
+.game-grid {
   display: grid;
-  grid-template-columns: repeat(6, 2fr);
+  grid-template-columns: repeat(8, 1fr);   /* full 8-grid */
   gap: 14px;
+  width: 100%;
+  max-width: 1400px;                      /* expands wider than before */
+  margin: 0 auto;                         /* centered but full-width stretch */
 }
+
+/* Card sizing stays clean at 8 columns */
+.game-card {
+  background: var(--panel);
+  border-radius: 0;
+  padding: 6px;
+  border: 2px solid var(--border-hard);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--fg);
+  transition: transform 0.08s ease,
+              box-shadow 0.08s ease,
+              border-color 0.08s ease,
+              background 0.08s ease;
+}
+
+/* perfect aspect ratio for 8-grid */
+.game-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;        /* square */
+  background: #000;
+  border: 2px solid #151515;
+  overflow: hidden;
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 1400px) {
+  .game-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .game-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .game-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .game-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .game-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .game-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 
 .game-card,
 .app-card,
