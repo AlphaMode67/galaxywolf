@@ -71,32 +71,6 @@
       background: rgba(0,255,127,0.25);
       box-shadow: 0 0 14px rgba(0,255,127,0.6);
     }
-
-    /* NEW: Global apply bar */
-    .apply-bar {
-      width: 100%;
-      margin-top: 30px;
-      display: flex;
-      gap: 12px;
-    }
-
-    .apply-bar button {
-      flex: 1;
-      padding: 10px;
-      font-size: 10px;
-      font-family: "Press Start 2P";
-      border: 2px solid var(--accent);
-      background: var(--accent-soft);
-      color: var(--accent);
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .apply-bar button:hover {
-      background: rgba(0,255,127,0.25);
-    }
-
-    .row { margin-bottom: 12px; }
   </style>
 </head>
 
@@ -121,9 +95,9 @@
   <div class="settings-grid">
 
     <!-- ===================================================================== -->
-    <!-- SMALL TAB CLOAKING PANEL -->
+    <!-- TAB CLOAKING (FIXED) -->
     <!-- ===================================================================== -->
-    <section class="settings-panel" id="cloak-panel">
+    <section class="settings-panel">
       <div class="settings-title">TAB CLOAKING</div>
 
       <label>Preset</label>
@@ -158,24 +132,20 @@
     <section class="settings-panel">
       <div class="settings-title">APPEARANCE</div>
 
-      <div class="row">
-        <label>Theme</label>
-        <select id="theme-select" class="settings-select">
-          <option value="dark">DARK</option>
-          <option value="baby">BLUE</option>
-          <option value="xmas">GREEN</option>
-        </select>
-      </div>
+      <label>Theme</label>
+      <select id="theme-select" class="settings-select">
+        <option value="dark">DARK</option>
+        <option value="baby">BLUE</option>
+        <option value="xmas">GREEN</option>
+      </select>
 
-      <div class="row">
-        <label>Accent Color</label>
-        <select id="accent-select" class="settings-select">
-          <option value="green">GREEN</option>
-          <option value="violet">VIOLET</option>
-          <option value="amber">AMBER</option>
-          <option value="white">WHITE</option>
-        </select>
-      </div>
+      <label style="margin-top:12px;">Accent Color</label>
+      <select id="accent-select" class="settings-select">
+        <option value="green">GREEN</option>
+        <option value="violet">VIOLET</option>
+        <option value="amber">AMBER</option>
+        <option value="white">WHITE</option>
+      </select>
     </section>
 
     <!-- ===================================================================== -->
@@ -214,7 +184,6 @@
     <!-- ===================================================================== -->
     <section class="settings-panel">
       <div class="settings-title">INFO / SUPPORT</div>
-
       <a href="about.html"><button class="settings-btn">ABOUT US</button></a>
       <a href="dmca.html"><button class="settings-btn">DMCA FORM</button></a>
     </section>
@@ -225,36 +194,52 @@
     <section class="settings-panel">
       <div class="settings-title">STORAGE</div>
 
+      <button class="settings-btn" id="btn-reset-settings">RESET SETTINGS</button>
       <button class="settings-btn" id="btn-clear-media">CLEAR MEDIA CACHE</button>
     </section>
 
   </div>
-
-  <!-- ================= GLOBAL APPLY / RESET ================= -->
-  <div class="apply-bar">
-    <button id="apply-all">APPLY SETTINGS</button>
-    <button id="reset-all">RESET ALL</button>
-  </div>
-
 </main>
 
-<!-- ========================= LOGIC ========================= -->
 <script>
-/* ----------------- PRESETS ----------------- */
+/* ----------------- FIXED PRESETS ----------------- */
 const PRESETS = {
-  drive: { title: "My Drive - Google Drive", iconHref: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png" },
-  schoology: { title: "Schoology", iconHref: "https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico" },
-  docs: { title: "Google Docs", iconHref: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" },
-  google: { title: "Google", iconHref: "favicon.ico" }
+  drive: {
+    enabled: true,
+    title: "My Drive - Google Drive",
+    iconHref: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png"
+  },
+  schoology: {
+    enabled: true,
+    title: "Schoology",
+    iconHref: "https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico"
+  },
+  docs: {
+    enabled: true,
+    title: "Google Docs",
+    iconHref: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico"
+  },
+  google: {
+    enabled: true,
+    title: "Google",
+    iconHref: "favicon.ico"
+  }
 };
 
 const cloakSelect = document.getElementById("cloak-select");
-const customBox = document.getElementById("custom-cloak-box");
-const titleInput = document.getElementById("cloak-title");
-const iconInput = document.getElementById("cloak-icon");
+const customBox   = document.getElementById("custom-cloak-box");
+const titleInput  = document.getElementById("cloak-title");
+const iconInput   = document.getElementById("cloak-icon");
 const applyCustomBtn = document.getElementById("apply-custom-cloak");
-const resetBtn = document.getElementById("reset-cloak");
-const statusEl = document.getElementById("cloak-status");
+const resetBtn       = document.getElementById("reset-cloak");
+const statusEl       = document.getElementById("cloak-status");
+
+function saveAndApplyCloak(cfg) {
+  cfg.enabled = true;
+  window.S0LACE.applyTabCloak(cfg, true);
+  localStorage.setItem("s0laceTabCloak", JSON.stringify(cfg));
+  statusEl.textContent = "Cloak applied.";
+}
 
 cloakSelect.addEventListener("change", () => {
   const val = cloakSelect.value;
@@ -267,26 +252,20 @@ cloakSelect.addEventListener("change", () => {
   customBox.style.display = "none";
 
   if (PRESETS[val]) {
-    window.S0LACE.applyTabCloak(PRESETS[val], true);
-    localStorage.setItem("s0laceTabCloak", JSON.stringify(PRESETS[val]));
-    statusEl.textContent = "Preset applied.";
+    saveAndApplyCloak(PRESETS[val]);
   }
 });
 
-/* Apply/reset buttons for custom cloak */
 applyCustomBtn.addEventListener("click", () => {
   const cfg = {
     enabled: true,
     title: titleInput.value.trim(),
     iconHref: iconInput.value.trim()
   };
-
   if (!cfg.title) return statusEl.textContent = "Title required.";
-
-  window.S0LACE.applyTabCloak(cfg, true);
-  localStorage.setItem("s0laceTabCloak", JSON.stringify(cfg));
-  statusEl.textContent = "Custom cloak applied.";
+  saveAndApplyCloak(cfg);
 });
+
 resetBtn.addEventListener("click", () => {
   window.S0LACE.clearTabCloak(true);
   localStorage.removeItem("s0laceTabCloak");
@@ -297,6 +276,7 @@ resetBtn.addEventListener("click", () => {
 document.getElementById("theme-select").addEventListener("change", e => {
   window.S0LACE.applyTheme(e.target.value, true);
 });
+
 document.getElementById("accent-select").addEventListener("change", e => {
   window.S0LACE.applyAccent(e.target.value, true);
 });
@@ -315,15 +295,14 @@ bgMode.addEventListener("change", () => {
 });
 
 /* ----------------- SECURITY ----------------- */
-document.getElementById("anti-close-toggle").checked =
-  localStorage.getItem("s0laceAntiClose") === "1";
+const antiToggle = document.getElementById("anti-close-toggle");
+antiToggle.checked = localStorage.getItem("s0laceAntiClose") === "1";
 
-document.getElementById("anti-close-toggle").addEventListener("change", e => {
+antiToggle.addEventListener("change", e => {
   if (e.target.checked) window.S0LACE.enableAntiClose();
   else window.S0LACE.disableAntiClose();
 });
 
-/* Launch blank */
 document.getElementById("blank-launch").addEventListener("click", () => {
   const win = window.open("about:blank", "_blank");
   if (!win) return alert("Popup blocked.");
@@ -337,21 +316,27 @@ document.getElementById("blank-launch").addEventListener("click", () => {
   `);
 });
 
-/* ----------------- CLEAR MEDIA ----------------- */
+/* ----------------- STORAGE ----------------- */
+document.getElementById("btn-reset-settings").addEventListener("click", () => {
+  if (!confirm("Reset ALL settings?")) return;
+
+  [
+    "s0laceTabCloak",
+    "s0laceAccent",
+    "s0laceTheme",
+    "s0laceBgMode",
+    "s0laceBgUrl",
+    "s0laceAntiClose",
+    "s0laceStartupBlank",
+    "s0laceMediaCache"
+  ].forEach(k => localStorage.removeItem(k));
+
+  location.reload();
+});
+
 document.getElementById("btn-clear-media").addEventListener("click", () => {
   localStorage.removeItem("s0laceMediaCache");
   alert("Media cache cleared.");
-});
-
-/* ----------------- GLOBAL APPLY / RESET ----------------- */
-document.getElementById("apply-all").addEventListener("click", () => {
-  alert("Settings applied.");
-});
-
-document.getElementById("reset-all").addEventListener("click", () => {
-  if (!confirm("Reset ALL settings?")) return;
-  localStorage.clear();
-  location.reload();
 });
 </script>
 
