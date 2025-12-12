@@ -7,13 +7,11 @@
 
   <link rel="shortcut icon" href="favicon.ico" />
   <link rel="stylesheet" href="index.css" />
-
-  <!-- Core systems -->
   <script src="global-hub.js" defer></script>
   <script src="register-sw.js" defer></script>
 
   <style>
-    /* GRID LAYOUT — 3 PANELS PER ROW */
+    /* ------ GRID ------ */
     .settings-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -22,14 +20,10 @@
     }
 
     @media (max-width: 1000px) {
-      .settings-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .settings-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 700px) {
-      .settings-grid {
-        grid-template-columns: 1fr;
-      }
+      .settings-grid { grid-template-columns: 1fr; }
     }
 
     .settings-panel {
@@ -48,17 +42,11 @@
       text-shadow: 0 0 6px var(--accent);
     }
 
-    .settings-section label,
-    .settings-section input,
-    .settings-section select {
-      font-family: "Press Start 2P";
-      font-size: 9px;
-    }
-
-    .settings-input {
+    .settings-input,
+    .settings-select {
       width: 100%;
-      margin-top: 4px;
       padding: 6px 8px;
+      margin-top: 4px;
       border: 2px solid var(--border-hard);
       background: #000;
       color: var(--fg);
@@ -67,14 +55,14 @@
     }
 
     .settings-btn {
-      font-family: "Press Start 2P";
-      font-size: 9px;
+      width: 100%;
+      margin-top: 8px;
       padding: 6px 10px;
       border: 2px solid var(--accent);
       background: var(--accent-soft);
+      font-family: "Press Start 2P";
+      font-size: 9px;
       color: var(--accent);
-      width: 100%;
-      margin-top: 8px;
       cursor: pointer;
       text-align: center;
     }
@@ -84,11 +72,7 @@
       box-shadow: 0 0 14px rgba(0,255,127,0.6);
     }
 
-    #cloak-status {
-      margin-top: 6px;
-      font-size: 9px;
-      color: var(--fg-dim);
-    }
+    .row { margin-bottom: 12px; }
   </style>
 </head>
 
@@ -109,237 +93,228 @@
 <main>
   <div class="page-header"><h1>Settings</h1></div>
 
-  <!-- ================= GRID ================== -->
+  <!-- ================= GRID ================= -->
   <div class="settings-grid">
 
-    <!-- ============= TAB CLOAK ============== -->
-    <section class="settings-panel">
+    <!-- ===================================================================== -->
+    <!-- SMALL TAB CLOAKING PANEL -->
+    <!-- ===================================================================== -->
+    <section class="settings-panel" id="cloak-panel">
       <div class="settings-title">TAB CLOAKING</div>
 
-      <div class="settings-section">
-        <div style="margin-bottom: 6px;">PRESETS ></div>
+      <label>Preset</label>
+      <select id="cloak-select" class="settings-select">
+        <option value="">SELECT...</option>
+        <option value="drive">GOOGLE DRIVE</option>
+        <option value="schoology">SCHOOLOGY</option>
+        <option value="docs">GOOGLE DOCS</option>
+        <option value="google">GOOGLE</option>
+        <option value="custom">CUSTOM...</option>
+      </select>
 
-        <button class="settings-btn" data-cloak-preset="drive">GOOGLE DRIVE</button>
-        <button class="settings-btn" data-cloak-preset="schoology">SCHOOLOGY</button>
-        <button class="settings-btn" data-cloak-preset="docs">GOOGLE DOCS</button>
-        <button class="settings-btn" data-cloak-preset="google">GOOGLE</button>
+      <div id="custom-cloak-box" style="display:none; margin-top:12px;">
+        <label>Title
+          <input id="cloak-title" class="settings-input" placeholder="Custom Title" />
+        </label>
 
-        <div style="border-top: 2px solid var(--border-hard); margin-top: 12px; padding-top: 12px;">
-          <div class="settings-title" style="font-size: 8px;">CUSTOM</div>
+        <label>Favicon
+          <input id="cloak-icon" class="settings-input" placeholder="https://.../favicon.ico" />
+        </label>
 
-          <label>Title
-            <input id="cloak-title" class="settings-input" placeholder="My Drive - Google Drive" />
-          </label>
+        <button class="settings-btn" id="apply-custom-cloak">APPLY</button>
+        <button class="settings-btn" id="reset-cloak">RESET</button>
+      </div>
 
-          <label>Favicon URL
-            <input id="cloak-icon" class="settings-input" placeholder="https://.../favicon.ico" />
-          </label>
+      <div id="cloak-status" style="margin-top:6px; font-size:8px; color:var(--fg-dim);"></div>
+    </section>
 
-          <button class="settings-btn" id="apply-custom-cloak">APPLY</button>
-          <button class="settings-btn" id="reset-cloak">RESET</button>
+    <!-- ===================================================================== -->
+    <!-- APPEARANCE (THEME + ACCENT MERGED) -->
+    <!-- ===================================================================== -->
+    <section class="settings-panel">
+      <div class="settings-title">APPEARANCE</div>
 
-          <div id="cloak-status"></div>
-        </div>
+      <div class="row">
+        <label>Theme</label>
+        <select id="theme-select" class="settings-select">
+          <option value="dark">DARK</option>
+          <option value="baby">BLUE</option>
+          <option value="xmas">GREEN</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>Accent Color</label>
+        <select id="accent-select" class="settings-select">
+          <option value="green">GREEN</option>
+          <option value="violet">VIOLET</option>
+          <option value="amber">AMBER</option>
+          <option value="white">WHITE</option>
+        </select>
       </div>
     </section>
 
-    <!-- ============= ACCENT ============== -->
-    <section class="settings-panel">
-      <div class="settings-title">ACCENT COLOR</div>
-
-      <label><input type="radio" name="accent" value="green" class="accent-radio" /> GREEN</label><br>
-      <label><input type="radio" name="accent" value="violet" class="accent-radio" /> VIOLET</label><br>
-      <label><input type="radio" name="accent" value="amber" class="accent-radio" /> AMBER</label><br>
-      <label><input type="radio" name="accent" value="white" class="accent-radio" /> WHITE</label>
-    </section>
-
-    <!-- ============= THEME ============== -->
-    <section class="settings-panel">
-      <div class="settings-title">THEME</div>
-
-      <label><input type="radio" name="theme" value="dark" class="theme-radio" /> DARK</label><br>
-      <label><input type="radio" name="theme" value="baby" class="theme-radio" /> BLUE</label><br>
-      <label><input type="radio" name="theme" value="xmas" class="theme-radio" /> GREEN</label>
-    </section>
-
-    <!-- ============= BACKGROUND ============== -->
+    <!-- ===================================================================== -->
+    <!-- BACKGROUND PANEL -->
+    <!-- ===================================================================== -->
     <section class="settings-panel">
       <div class="settings-title">BACKGROUND</div>
 
-      <select id="bg-mode" class="settings-input">
+      <label>Mode</label>
+      <select id="bg-mode" class="settings-select">
         <option value="default">DEFAULT (CRT)</option>
         <option value="gif-stars">STARRY GIF</option>
-        <option value="custom">CUSTOM URL</option>
+        <option value="custom">CUSTOM</option>
       </select>
 
-      <div id="bg-url-row" style="display:none; margin-top: 8px;">
-        <label>Background URL
+      <div id="bg-url-row" style="display:none; margin-top:12px;">
+        <label>Image URL
           <input id="bg-url" class="settings-input" placeholder="https://example.com/bg.png" />
         </label>
       </div>
     </section>
 
-    <!-- ============= SECURITY ============== -->
+    <!-- ===================================================================== -->
+    <!-- SECURITY -->
+    <!-- ===================================================================== -->
     <section class="settings-panel">
       <div class="settings-title">SECURITY</div>
 
-      <!-- Anti-close toggle remains -->
-      <label><input type="checkbox" id="anti-close-toggle" /> ANTI-CLOSE PROTECTION</label>
+      <label><input type="checkbox" id="anti-close-toggle" /> ENABLE ANTI-CLOSE</label>
 
       <button class="settings-btn" id="blank-launch">LAUNCH IN ABOUT:BLANK</button>
-      <div style="font-size:8px; color:var(--fg-dim); margin-top:6px;">
-        (auto-launch toggle removed because it conflicted with blank)
-      </div>
     </section>
 
-    <!-- ============= STORAGE ============== -->
+    <!-- ===================================================================== -->
+    <!-- LINKS PANEL (ABOUT + DMCA) -->
+    <!-- ===================================================================== -->
+    <section class="settings-panel">
+      <div class="settings-title">INFO / SUPPORT</div>
+
+      <a href="about.html"><button class="settings-btn">ABOUT US</button></a>
+      <a href="dmca.html"><button class="settings-btn">DMCA FORM</button></a>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STORAGE -->
+    <!-- ===================================================================== -->
     <section class="settings-panel">
       <div class="settings-title">STORAGE</div>
 
-      <button class="settings-btn" id="btn-reset-settings">RESET ALL SETTINGS</button>
+      <button class="settings-btn" id="btn-reset-settings">RESET SETTINGS</button>
       <button class="settings-btn" id="btn-clear-media">CLEAR MEDIA CACHE</button>
     </section>
 
   </div>
   <!-- END GRID -->
-
 </main>
 
-<!-- ====================== SCRIPT LOGIC (unchanged except layout) ====================== -->
-<script>
-/* All your original settings logic kept exactly the same — 
-   cloak system, accent/theme/background, anti-close, blank launch, and sync-on-load.
-   Only DOM references updated to match the new layout.
-*/
 
-const presetButtons = document.querySelectorAll("[data-cloak-preset]");
+
+<!-- ========================= LOGIC ========================= -->
+<script>
+/* ----------------- PRESETS ----------------- */
+const PRESETS = {
+  drive: {
+    title: "My Drive - Google Drive",
+    iconHref: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png"
+  },
+  schoology: {
+    title: "Schoology",
+    iconHref: "https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico"
+  },
+  docs: {
+    title: "Google Docs",
+    iconHref: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico"
+  },
+  google: {
+    title: "Google",
+    iconHref: "favicon.ico"
+  }
+};
+
+const cloakSelect = document.getElementById("cloak-select");
+const customBox = document.getElementById("custom-cloak-box");
 const titleInput = document.getElementById("cloak-title");
 const iconInput = document.getElementById("cloak-icon");
 const applyCustomBtn = document.getElementById("apply-custom-cloak");
 const resetBtn = document.getElementById("reset-cloak");
 const statusEl = document.getElementById("cloak-status");
 
-const accentRadios = document.querySelectorAll(".accent-radio");
-const themeRadios = document.querySelectorAll(".theme-radio");
+cloakSelect.addEventListener("change", () => {
+  const val = cloakSelect.value;
 
-const bgModeSelect = document.getElementById("bg-mode");
-const bgUrlRow = document.getElementById("bg-url-row");
-const bgUrlInput = document.getElementById("bg-url");
+  if (val === "custom") {
+    customBox.style.display = "block";
+    return;
+  }
 
-const antiToggle = document.getElementById("anti-close-toggle");
-const blankLaunch = document.getElementById("blank-launch");
+  customBox.style.display = "none";
 
-const btnResetSettings = document.getElementById("btn-reset-settings");
-const btnClearMedia = document.getElementById("btn-clear-media");
-
-const CLOAK_KEY = "s0laceTabCloak";
-
-const PRESETS = {
-  drive: {
-    title: "My Drive - Google Drive",
-    iconHref: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
-  },
-  schoology: {
-    title: "Schoology",
-    iconHref: "https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico",
-  },
-  docs: {
-    title: "Document - Google Docs",
-    iconHref: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
-  },
-  google: {
-    title: "Google",
-    iconHref: "favicon.ico",
-  },
-};
-
-function saveCloak(cfg) {
-  localStorage.setItem(CLOAK_KEY, JSON.stringify(cfg));
-}
-
-function loadCloak() {
-  try { return JSON.parse(localStorage.getItem(CLOAK_KEY)); }
-  catch { return null; }
-}
-
-presetButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const preset = PRESETS[btn.dataset.cloakPreset];
-    if (!preset) return;
-
-    window.S0LACE.applyTabCloak(preset, true);
-    saveCloak(preset);
-
-    titleInput.value = preset.title;
-    iconInput.value = preset.iconHref;
+  if (PRESETS[val]) {
+    window.S0LACE.applyTabCloak(PRESETS[val], true);
+    localStorage.setItem("s0laceTabCloak", JSON.stringify(PRESETS[val]));
     statusEl.textContent = "Preset applied.";
-  });
+  }
 });
 
 applyCustomBtn.addEventListener("click", () => {
   const cfg = {
     enabled: true,
     title: titleInput.value.trim(),
-    iconHref: iconInput.value.trim(),
+    iconHref: iconInput.value.trim()
   };
 
   if (!cfg.title) return statusEl.textContent = "Title required.";
 
   window.S0LACE.applyTabCloak(cfg, true);
-  saveCloak(cfg);
-
+  localStorage.setItem("s0laceTabCloak", JSON.stringify(cfg));
   statusEl.textContent = "Custom cloak applied.";
 });
 
 resetBtn.addEventListener("click", () => {
   window.S0LACE.clearTabCloak(true);
-  localStorage.removeItem(CLOAK_KEY);
-  titleInput.value = "";
-  iconInput.value = "";
+  localStorage.removeItem("s0laceTabCloak");
   statusEl.textContent = "Cloak reset.";
 });
 
-/* ACCENT */
-accentRadios.forEach(r => {
-  r.addEventListener("change", () => {
-    if (r.checked) window.S0LACE.applyAccent(r.value, true);
-  });
+
+/* ----------------- APPEARANCE ----------------- */
+document.getElementById("theme-select").addEventListener("change", e => {
+  window.S0LACE.applyTheme(e.target.value, true);
 });
 
-/* THEME */
-themeRadios.forEach(r => {
-  r.addEventListener("change", () => {
-    if (r.checked) window.S0LACE.applyTheme(r.value, true);
-  });
+document.getElementById("accent-select").addEventListener("change", e => {
+  window.S0LACE.applyAccent(e.target.value, true);
 });
 
-/* BACKGROUND */
-bgModeSelect.addEventListener("change", () => {
-  const mode = bgModeSelect.value;
 
-  bgUrlRow.style.display = mode === "custom" ? "block" : "none";
+/* ----------------- BACKGROUND ----------------- */
+const bgMode = document.getElementById("bg-mode");
+const bgUrlRow = document.getElementById("bg-url-row");
+const bgUrlInput = document.getElementById("bg-url");
 
-  const url = mode === "custom" ? bgUrlInput.value.trim() : "";
-  window.S0LACE.applyBackground(mode, url, true);
+bgMode.addEventListener("change", () => {
+  const m = bgMode.value;
+  bgUrlRow.style.display = m === "custom" ? "block" : "none";
+
+  const url = m === "custom" ? bgUrlInput.value.trim() : "";
+  window.S0LACE.applyBackground(m, url, true);
 });
 
-bgUrlInput.addEventListener("blur", () => {
-  if (bgModeSelect.value === "custom") {
-    window.S0LACE.applyBackground("custom", bgUrlInput.value.trim(), true);
-  }
-});
 
-/* ANTI CLOSE */
-antiToggle.checked = localStorage.getItem("s0laceAntiClose") === "1";
-antiToggle.addEventListener("change", () => {
-  if (antiToggle.checked) window.S0LACE.enableAntiClose();
+/* ----------------- SECURITY ----------------- */
+document.getElementById("anti-close-toggle").checked =
+  localStorage.getItem("s0laceAntiClose") === "1";
+
+document.getElementById("anti-close-toggle").addEventListener("change", e => {
+  if (e.target.checked) window.S0LACE.enableAntiClose();
   else window.S0LACE.disableAntiClose();
 });
 
-/* ABOUT:BLANK LAUNCH BUTTON */
-blankLaunch.addEventListener("click", () => {
+document.getElementById("blank-launch").addEventListener("click", () => {
   const win = window.open("about:blank", "_blank");
-  if (!win) return alert("Popup blocked — enable popups.");
+  if (!win) return alert("Popup blocked.");
 
   win.document.write(`
     <style>
@@ -350,48 +325,28 @@ blankLaunch.addEventListener("click", () => {
   `);
 });
 
-/* RESET & CACHE */
-btnResetSettings.addEventListener("click", () => {
+
+/* ----------------- STORAGE ----------------- */
+document.getElementById("btn-reset-settings").addEventListener("click", () => {
   if (!confirm("Reset ALL settings?")) return;
 
   [
-    CLOAK_KEY,
+    "s0laceTabCloak",
     "s0laceAccent",
     "s0laceTheme",
     "s0laceBgMode",
     "s0laceBgUrl",
     "s0laceAntiClose",
     "s0laceStartupBlank",
-    "s0laceMediaCache"
+    "s0laceMediaCache",
   ].forEach(k => localStorage.removeItem(k));
 
   location.reload();
 });
 
-btnClearMedia.addEventListener("click", () => {
+document.getElementById("btn-clear-media").addEventListener("click", () => {
   localStorage.removeItem("s0laceMediaCache");
   alert("Media cache cleared.");
-});
-
-/* SYNC ON LOAD */
-window.addEventListener("s0lace:settingsLoaded", evt => {
-  const { accent, theme, bgMode, bgUrl } = evt.detail;
-
-  accentRadios.forEach(r => r.checked = r.value === accent);
-  themeRadios.forEach(r => r.checked = r.value === theme);
-
-  bgModeSelect.value = bgMode;
-  if (bgMode === "custom") {
-    bgUrlRow.style.display = "block";
-    bgUrlInput.value = bgUrl;
-  }
-
-  const saved = loadCloak();
-  if (saved) {
-    titleInput.value = saved.title || "";
-    iconInput.value = saved.iconHref || "";
-    statusEl.textContent = "Cloak active.";
-  }
 });
 </script>
 
