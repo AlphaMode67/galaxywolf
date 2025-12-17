@@ -65,15 +65,6 @@
   min-width: 160px;
 }
 
-/* Smaller Continue Watching cards */
-#continue-grid .media-card {
-  max-width: 140px;
-}
-
-#continue-grid img {
-  height: 200px;
-  object-fit: cover;
-}
 
 
 
