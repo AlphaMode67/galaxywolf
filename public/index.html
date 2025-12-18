@@ -217,19 +217,46 @@ window.addEventListener("storage", updateSideIcons);
 
 <!-- CLOCK + BATTERY -->
 <script>
+/* ===== CLOCK (12h) ===== */
 function updateClock() {
   const d = new Date();
   let h = d.getHours();
   const m = d.getMinutes().toString().padStart(2,"0");
   const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12;
-  h = h ? h : 12; // 0 -> 12
+  h = h % 12 || 12;
   document.getElementById("clock").textContent = `${h}:${m} ${ampm}`;
 }
-
 updateClock();
 setInterval(updateClock, 1000);
+
+/* ===== BATTERY ===== */
+const batteryEl = document.getElementById("battery");
+
+if ("getBattery" in navigator) {
+  navigator.getBattery().then(battery => {
+
+    function updateBattery() {
+      const percent = Math.round(battery.level * 100);
+      const charging = battery.charging;
+
+      batteryEl.textContent =
+        (charging ? "⚡" : "🔋") + " " + percent + "%";
+
+      batteryEl.style.color =
+        percent <= 15 ? "#ff5555" : "var(--accent)";
+    }
+
+    updateBattery();
+
+    battery.addEventListener("levelchange", updateBattery);
+    battery.addEventListener("chargingchange", updateBattery);
+  });
+} else {
+  // API not supported (Safari / Firefox)
+  batteryEl.textContent = "🔋 N/A";
+}
 </script>
+
 
 
 <!-- FIREBASE VISITORS (FIXED) -->
